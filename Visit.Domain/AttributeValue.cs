@@ -1,21 +1,19 @@
 ﻿namespace Visit.Domain;
 
-/// <summary>
-///     Значение атрибута у  заведения
-/// </summary>
 public class AttributeValue
 {
-    public Attribute Attribute { get; set; }
     
-    public int IntValue { get; set; }
-    public IEnumerable<int> IntValues { get; set; }
+    public long Id { get; set; }
 
-    public double DoubleVale { get; set; }
-    public IEnumerable<double> DoubleValues { get; set; }
+    public int PlaceId { get; set; }
+    public Place Place { get; set; }
+
+    public long AttributeId { get; set; }
+    public Attribute Attribute { get; set; }
+
+    public int? IntValue { get; set; }
+
+    public double? DoubleValue { get; set; }
 
     public string StringValue { get; set; }
-    public IEnumerable<string> StringValues { get; set; }
-
-    public DateTimeOffset DateTimeOffsetValue { get; set; }
-    public IEnumerable<DateTimeOffset> DateTimeOffsetValues { get; set; }
 }

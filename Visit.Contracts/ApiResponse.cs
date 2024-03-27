@@ -11,6 +11,8 @@ public class ApiResponse
 
     public string Error { get; set; }
 
+    public int ErrorCode { get; set; }
+
     public static ApiResponse CreateSuccess() => new()
     {
         Success = true
@@ -26,19 +28,21 @@ public class ApiResponse
         return success;
     }
     
-    public static ApiResponse<TResult> CreateFailure<TResult>(string error = null) where TResult : class
+    public static ApiResponse<TResult> CreateFailure<TResult>(int errorCode = 400, string error = null) where TResult : class
     {
         var failure = new ApiResponse<TResult>
         {
             Success = false,
-            Error = error
+            ErrorCode = errorCode,
+            Error = error,
         };
         return failure;
     }
 
-    public static ApiResponse CreateFailure(string error = null) => new()
+    public static ApiResponse CreateFailure(int errorCode = 400, string error = null) => new()
     {
         Success = false,
+        ErrorCode = errorCode,
         Error = error,
     };
 }

@@ -6,7 +6,7 @@
 /// </summary>
 public class Category : IVisibleEntity
 {
-    private Category()
+    public Category()
     {
     }
 

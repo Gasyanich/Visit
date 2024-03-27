@@ -1,7 +1,12 @@
-﻿namespace Visit.Contracts.Attribute;
+﻿namespace Visit.Contracts.Attribute.GetAll;
 
-public class CreateAttributeDto
+public class GetAllAttributesResponse
 {
+    /// <summary>
+    ///     Id атрибута
+    /// </summary>
+    public long Id { get; set; }
+
     /// <summary>
     ///     Название атрибута
     /// </summary>
@@ -27,7 +32,7 @@ public class CreateAttributeDto
     ///     <example>Вид кухни: итальянская, греческая, грузинская..</example>
     ///     <example>Способ оплаты: картой, наличными, переводом</example>
     /// </summary>
-    public IEnumerable<object> PredefinedValues { get; set; }
+    public List<object> PredefinedValues { get; set; }
 
     /// <summary>
     ///     Тип значения атрибута
@@ -39,3 +44,4 @@ public class CreateAttributeDto
     /// </summary>
     public AttributeControlType ControlType { get; set; }
 }
+

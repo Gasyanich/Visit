@@ -1,34 +1,12 @@
-﻿namespace Visit.Domain;
+﻿namespace Visit.Contracts.Attribute.Create;
 
-/// <summary>
-///     Атрибут. Любое свойство заведения
-///     <example>Вид кухни, способ оплаты, наличие живой музыки</example>
-/// </summary>
-public class Attribute : IVisibleEntity
+public class CreateAttributeResponse
 {
+    /// <summary>
+    ///     Id атрибута
+    /// </summary>
     public long Id { get; set; }
 
-    private Attribute(){}
-    
-    public Attribute(string name,
-        bool canUseInFilter,
-        int order,
-        bool allowMultipleValues,
-        AttributeType type,
-        AttributeControlType controlType,
-        List<object> predefinedValues = null)
-    {
-        Name = name;
-        CanUseInFilter = canUseInFilter;
-        Order = order;
-        AllowMultipleValues = allowMultipleValues;
-        Type = type;
-        ControlType = controlType;
-        PredefinedValues = predefinedValues;
-    }
-
-    public List<string> StringValues { get; set; }
-    
     /// <summary>
     ///     Название атрибута
     /// </summary>
@@ -65,11 +43,4 @@ public class Attribute : IVisibleEntity
     ///     Тип контрола атрибута
     /// </summary>
     public AttributeControlType ControlType { get; set; }
-
-    /// <summary>
-    ///     Ссылка на категории, к которым принадлежит атрибут
-    /// </summary>
-    public List<Category> Categories { get; set; }
-
-    public bool IsVisible { get; set; }
 }

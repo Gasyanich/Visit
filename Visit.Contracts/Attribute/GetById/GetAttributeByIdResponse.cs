@@ -1,34 +1,12 @@
-﻿namespace Visit.Domain;
+﻿namespace Visit.Contracts.Attribute.GetById;
 
-/// <summary>
-///     Атрибут. Любое свойство заведения
-///     <example>Вид кухни, способ оплаты, наличие живой музыки</example>
-/// </summary>
-public class Attribute : IVisibleEntity
+public class GetAttributeByIdResponse
 {
+    /// <summary>
+    ///     Id атрибута
+    /// </summary>
     public long Id { get; set; }
 
-    private Attribute(){}
-    
-    public Attribute(string name,
-        bool canUseInFilter,
-        int order,
-        bool allowMultipleValues,
-        AttributeType type,
-        AttributeControlType controlType,
-        List<object> predefinedValues = null)
-    {
-        Name = name;
-        CanUseInFilter = canUseInFilter;
-        Order = order;
-        AllowMultipleValues = allowMultipleValues;
-        Type = type;
-        ControlType = controlType;
-        PredefinedValues = predefinedValues;
-    }
-
-    public List<string> StringValues { get; set; }
-    
     /// <summary>
     ///     Название атрибута
     /// </summary>
@@ -67,9 +45,20 @@ public class Attribute : IVisibleEntity
     public AttributeControlType ControlType { get; set; }
 
     /// <summary>
-    ///     Ссылка на категории, к которым принадлежит атрибут
+    ///     Список категорий, к которым принадледит атрибут
     /// </summary>
-    public List<Category> Categories { get; set; }
+    public IEnumerable<GetAttributeCategoryModel> Categories { get; set; }
+}
 
-    public bool IsVisible { get; set; }
+public class GetAttributeCategoryModel
+{
+    /// <summary>
+    ///     Id категории
+    /// </summary>
+    public long Id { get; set; }
+
+    /// <summary>
+    ///     Название категории
+    /// </summary>
+    public string Name { get; set; }
 }

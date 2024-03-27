@@ -1,12 +1,9 @@
-﻿namespace Visit.Contracts.Attribute;
+﻿using System.Text.Json;
 
-public class AttributeDto
+namespace Visit.Contracts.Attribute.Create;
+
+public class CreateAttributeRequest
 {
-    /// <summary>
-    ///     Id атрибута
-    /// </summary>
-    public long Id { get; set; }
-
     /// <summary>
     ///     Название атрибута
     /// </summary>
@@ -15,32 +12,32 @@ public class AttributeDto
     /// <summary>
     ///     Может ли атрибут использоваться в фильтрах
     /// </summary>
-    public bool CanUseInFilter { get; set; }
+    public bool? CanUseInFilter { get; set; }
 
     /// <summary>
     ///     Порядок отображения атрибута
     /// </summary>
-    public int Order { get; set; }
+    public int? Order { get; set; }
 
     /// <summary>
     ///     Допустимо ли использовать несколько значений атрибута
     /// </summary>
-    public bool AllowMultipleValues { get; set; }
+    public bool? AllowMultipleValues { get; set; }
 
     /// <summary>
     ///     Определенные заранее значения для атрибута
     ///     <example>Вид кухни: итальянская, греческая, грузинская..</example>
     ///     <example>Способ оплаты: картой, наличными, переводом</example>
     /// </summary>
-    public List<object> PredefinedValues { get; set; }
+    public IEnumerable<JsonElement> PredefinedValues { get; set; }
 
     /// <summary>
     ///     Тип значения атрибута
     /// </summary>
-    public AttributeType Type { get; set; }
+    public AttributeType? Type { get; set; }
 
     /// <summary>
     ///     Тип контрола атрибута
     /// </summary>
-    public AttributeControlType ControlType { get; set; }
+    public AttributeControlType? ControlType { get; set; }
 }

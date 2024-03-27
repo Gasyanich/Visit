@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using FluentValidation;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Visit.API.Mapping;
 using Visit.DAL;
 using Visit.Domain.BL;
@@ -15,40 +17,33 @@ namespace Visit.API
 
             var services = builder.Services;
             var configuration = builder.Configuration;
-            
+
             services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
-            
-            services.AddSwaggerGen();
-            services.AddAutoMapper(cfg =>
+
+            services.AddSwaggerGen(c =>
             {
-                cfg.AddProfile(new ApiMappingProfile());
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Visit.Contracts.xml"));
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Visit.API.xml"));
+            });
+            services.AddAutoMapper(cfg => { cfg.AddProfile(new ApiMappingProfile()); });
+            services.AddValidatorsFromAssembly(typeof(Program).Assembly).AddFluentValidationAutoValidation(opt =>
+            {
+                opt.DisableBuiltInModelValidation = true;
             });
 
             services.AddMvc()
-                .AddJsonOptions(opt =>
-                {
-                    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
+                .AddJsonOptions(opt => { opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); });
 
             services.AddDomain()
                 .AddDataAccess(configuration);
 
             var app = builder.Build();
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
             
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();

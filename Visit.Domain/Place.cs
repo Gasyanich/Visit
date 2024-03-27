@@ -7,6 +7,19 @@ public class Place : IVisibleEntity
 {
     public int Id { get; set; }
 
+    private Place()
+    {
+        
+    }
+
+    public Place(string name, string description, List<Category> categories, List<AttributeValue> attributeValues)
+    {
+        Name = name;
+        Description = description;
+        Categories = categories;
+        AttributeValues = attributeValues;
+    }
+
     /// <summary>
     ///     Наименование заведения
     /// </summary>

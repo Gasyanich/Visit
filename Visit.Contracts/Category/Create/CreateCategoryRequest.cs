@@ -1,6 +1,6 @@
-﻿namespace Visit.Contracts.Category;
+﻿namespace Visit.Contracts.Category.Create;
 
-public class CreateCategoryDto
+public class CreateCategoryRequest
 {
     /// <summary>
     ///     Наименование категории

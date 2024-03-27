@@ -1,6 +1,6 @@
-﻿namespace Visit.Contracts.Category;
+﻿namespace Visit.Contracts.Category.Create;
 
-public class CreateCategoryResultDto
+public class CreateCategoryResponse
 {
     /// <summary>
     ///     Id категории

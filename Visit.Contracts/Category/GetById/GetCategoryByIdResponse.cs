@@ -1,34 +1,32 @@
-﻿namespace Visit.Domain;
+﻿using Visit.Contracts.Attribute;
 
-/// <summary>
-///     Атрибут. Любое свойство заведения
-///     <example>Вид кухни, способ оплаты, наличие живой музыки</example>
-/// </summary>
-public class Attribute : IVisibleEntity
+namespace Visit.Contracts.Category.GetById;
+
+public class GetCategoryByIdResponse
 {
+    /// <summary>
+    ///     Id категории
+    /// </summary>
     public long Id { get; set; }
 
-    private Attribute(){}
-    
-    public Attribute(string name,
-        bool canUseInFilter,
-        int order,
-        bool allowMultipleValues,
-        AttributeType type,
-        AttributeControlType controlType,
-        List<object> predefinedValues = null)
-    {
-        Name = name;
-        CanUseInFilter = canUseInFilter;
-        Order = order;
-        AllowMultipleValues = allowMultipleValues;
-        Type = type;
-        ControlType = controlType;
-        PredefinedValues = predefinedValues;
-    }
+    /// <summary>
+    ///     Название категории
+    /// </summary>
+    public string Name { get; set; }
 
-    public List<string> StringValues { get; set; }
-    
+    /// <summary>
+    ///     Список атрибутов категории
+    /// </summary>
+    public IEnumerable<GetCategoryAttributeModel> Attributes { get; set; }
+}
+
+public class GetCategoryAttributeModel
+{
+    /// <summary>
+    ///     Id атрибута
+    /// </summary>
+    public long Id { get; set; }
+
     /// <summary>
     ///     Название атрибута
     /// </summary>
@@ -65,11 +63,4 @@ public class Attribute : IVisibleEntity
     ///     Тип контрола атрибута
     /// </summary>
     public AttributeControlType ControlType { get; set; }
-
-    /// <summary>
-    ///     Ссылка на категории, к которым принадлежит атрибут
-    /// </summary>
-    public List<Category> Categories { get; set; }
-
-    public bool IsVisible { get; set; }
 }
