@@ -12,7 +12,7 @@ public class Place : IVisibleEntity
         
     }
 
-    public Place(string name, string description, List<Category> categories, List<AttributeValue> attributeValues)
+    public Place(string name, string description, IEnumerable<Category> categories, List<AttributeValue> attributeValues)
     {
         Name = name;
         Description = description;
@@ -33,7 +33,7 @@ public class Place : IVisibleEntity
     /// <summary>
     ///     Ссылка на категории, к которым принадлежит заведение
     /// </summary>
-    public List<Category> Categories { get; set; }
+    public IEnumerable<Category> Categories { get; set; }
 
     /// <summary>
     ///     Значения атрибутов для заведения

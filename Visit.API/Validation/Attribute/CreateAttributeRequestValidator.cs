@@ -16,18 +16,24 @@ public class CreateAttributeRequestValidator : AbstractValidator<CreateAttribute
             .GreaterThan(0);
 
         RuleFor(r => r.AllowMultipleValues).NotNull();
+        
         RuleFor(r => r.CanUseInFilter).NotNull();
 
-        RuleFor(r => r.PredefinedValues)
-            .Must(values => values.All(je => je.ValueKind == JsonValueKind.String))
-            .When(r => r.Type == AttributeType.String);
-        
-        RuleFor(r => r.PredefinedValues)
-            .Must(values => values.All(je => je.ValueKind == JsonValueKind.Number && je.TryGetInt32(out _)))
-            .When(r => r.Type == AttributeType.Int);
-        
-        RuleFor(r => r.PredefinedValues)
-            .Must(values => values.All(je => je.ValueKind == JsonValueKind.Number && je.TryGetDouble(out _)))
-            .When(r => r.Type == AttributeType.Double);
+        When(r => r.AllowMultipleValues != null && r.AllowMultipleValues.Value, () =>
+        {
+            RuleFor(r => r.PredefinedValues).NotEmpty();
+            
+            RuleFor(r => r.PredefinedValues)
+                .Must(values => values.All(je => je.ValueKind == JsonValueKind.String))
+                .When(r => r.Type == AttributeType.String);
+
+            RuleFor(r => r.PredefinedValues)
+                .Must(values => values.All(je => je.ValueKind == JsonValueKind.Number && je.TryGetInt32(out _)))
+                .When(r => r.Type == AttributeType.Int);
+
+            RuleFor(r => r.PredefinedValues)
+                .Must(values => values.All(je => je.ValueKind == JsonValueKind.Number && je.TryGetDouble(out _)))
+                .When(r => r.Type == AttributeType.Double);
+        });
     }
 }

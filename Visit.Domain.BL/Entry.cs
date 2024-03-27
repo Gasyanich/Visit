@@ -9,6 +9,8 @@ public static class Entry
     {
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<IAttributeService, AttributeService>();
+        services.AddScoped<IPlaceService, PlaceService>();
+        services.AddScoped<IAttributeValueFactory, AttributeValueFactory>();
 
         return services;
     }

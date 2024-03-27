@@ -8,7 +8,7 @@ public class CreatePlaceDto
 
     public IEnumerable<long> CategoryIds { get; set; }
 
-    public IEnumerable<CreatePlaceAttributeValueDto> Values { get; set; }
+    public List<CreatePlaceAttributeValueDto> Values { get; set; }
 }
 
 public class CreatePlaceAttributeValueDto
