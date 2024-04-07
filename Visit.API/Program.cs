@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Visit.API.Mapping;
 using Visit.DAL;
@@ -44,6 +45,9 @@ namespace Visit.API
                 .AddDataAccess(configuration);
 
             var app = builder.Build();
+
+            var db = app.Services.GetRequiredService<DataContext>().Database;
+            db.Migrate();
 
             app.UseSwagger();
             app.UseSwaggerUI();
