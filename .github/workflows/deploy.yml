@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Deploy
 
 on:
   push:
@@ -13,3 +13,6 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: docker build . --file Visit.API/Dockerfile --tag visit-api:latest
+
+    - name: Run docker-compose
+      run: docker-compose -f ${{ secrets.DOCKER_COMPOSE_FILE_PATH }} up -d
