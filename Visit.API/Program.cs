@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using FluentValidation;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Visit.API.Mapping;
@@ -48,6 +49,11 @@ namespace Visit.API
 
             var db = app.Services.CreateScope().ServiceProvider.GetRequiredService<DataContext>().Database;
             db.Migrate();
+            
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseSwagger();
             app.UseSwaggerUI();
