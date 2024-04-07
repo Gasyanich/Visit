@@ -46,7 +46,7 @@ namespace Visit.API
 
             var app = builder.Build();
 
-            var db = app.Services.GetRequiredService<DataContext>().Database;
+            var db = app.Services.CreateScope().ServiceProvider.GetRequiredService<DataContext>().Database;
             db.Migrate();
 
             app.UseSwagger();
