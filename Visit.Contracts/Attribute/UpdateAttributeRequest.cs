@@ -1,9 +1,14 @@
 ﻿using System.Text.Json;
 
-namespace Visit.Contracts.Attribute.Create;
+namespace Visit.Contracts.Attribute;
 
-public class CreateAttributeRequest
+public class UpdateAttributeRequest
 {
+    /// <summary>
+    ///     Id обновляемого атрибута
+    /// </summary>
+    public int Id { get; set; }
+
     /// <summary>
     ///     Название атрибута
     /// </summary>
@@ -40,4 +45,19 @@ public class CreateAttributeRequest
     ///     Тип контрола атрибута
     /// </summary>
     public AttributeControlType? ControlType { get; set; }
+
+    /// <summary>
+    ///     Использовать значения атрибута в полнотекстовом поиске
+    /// </summary>
+    public bool IsUseValuesForTextSearch { get; set; }
+
+    /// <summary>
+    ///     Обязательность заполнения атрибута
+    /// </summary>
+    public bool IsRequired { get; set; }
+
+    /// <summary>
+    ///     Уникальный код атрибута. Может пригодится в дальнейшем при построении UI
+    /// </summary>
+    public string Code { get; set; }
 }

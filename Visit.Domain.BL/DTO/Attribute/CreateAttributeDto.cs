@@ -38,4 +38,19 @@ public class CreateAttributeDto
     ///     Тип контрола атрибута
     /// </summary>
     public AttributeControlType ControlType { get; set; }
+    
+    /// <summary>
+    ///     Использовать значения атрибута в полнотекстовом поиске
+    /// </summary>
+    public bool IsUseValuesForTextSearch { get; set; }
+
+    /// <summary>
+    ///     Обязательность заполнения атрибута
+    /// </summary>
+    public bool IsRequired { get; set; }
+
+    /// <summary>
+    ///     Уникальный код атрибута. Может пригодится в дальнейшем при построении UI
+    /// </summary>
+    public string Code { get; set; }
 }

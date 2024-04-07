@@ -4,9 +4,9 @@ namespace Visit.API.Mapping;
 
 public static class JsonElementMappingHelper
 {
-    public static IEnumerable<object> MapToObjects(this IEnumerable<JsonElement> jsonElement)
+    public static IEnumerable<object> MapToObjects(this IEnumerable<JsonElement>? jsonElement)
     {
-        return jsonElement.Select(e => e.MapToObject());
+        return jsonElement?.Select(e => e.MapToObject()) ?? Enumerable.Empty<object>();
     }
     
     public static object MapToObject(this JsonElement jsonElement)

@@ -1,31 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Visit.DAL;
-using Visit.Domain.BL.Abstractions;
+﻿using Visit.Domain.BL.Abstractions;
+using Visit.Domain.BL.Abstractions.Repository;
 using Visit.Domain.BL.DTO.Place;
 
 namespace Visit.Domain.BL;
 
-public class AttributeValueFactory(DataContext dataContext) : IAttributeValueFactory
+public class AttributeValueFactory(ICategoryRepository categoryRepository) : IAttributeValueFactory
 {
-    public async Task<IEnumerable<AttributeValue>> CreateAttributeValues(IEnumerable<CreatePlaceAttributeValueDto> dtos)
+    public async Task<IEnumerable<AttributeValue>> CreateAttributeValues(
+        IEnumerable<int> categoryIds,
+        IEnumerable<AttributeValueDto> attributeValues)
     {
-        var attributeValueDtos = dtos as CreatePlaceAttributeValueDto[] ?? dtos.ToArray();
+        var categories = await categoryRepository.GetByIds(categoryIds);
 
-        var attributeIds = attributeValueDtos.Select(dto => dto.AttributeId);
-
-        var attributes = await dataContext.Attributes
-            .Where(a => attributeIds.Contains(a.Id))
-            .ToDictionaryAsync(a => a.Id, a => a);
+        var attributesDict = categories.SelectMany(c => c.Attributes).ToDictionary(a => a.Id, a => a);
 
         var result = new List<AttributeValue>();
 
-        foreach (var dto in attributeValueDtos)
+        foreach (var dto in attributeValues)
         {
             // TODO: Exception
-            if (!attributes.TryGetValue(dto.AttributeId, out var attribute)) continue;
+            if (!attributesDict.TryGetValue(dto.AttributeId, out var attribute)) continue;
 
             if (attribute.AllowMultipleValues)
             {
+                // TODO: проверять, что все значения имеют тот же тип, что и атрибут
                 result.AddRange(dto.Values.Select(value => MapToAttributeValue(attribute, value)));
             }
             else
@@ -51,9 +49,6 @@ public class AttributeValueFactory(DataContext dataContext) : IAttributeValueFac
                 break;
             case AttributeType.Int:
                 attributeValue.IntValue = (int) value;
-                break;
-            case AttributeType.Double:
-                attributeValue.DoubleValue = (double) value;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

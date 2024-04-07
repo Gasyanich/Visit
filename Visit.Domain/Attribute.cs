@@ -6,29 +6,10 @@
 /// </summary>
 public class Attribute : IVisibleEntity
 {
-    public long Id { get; set; }
-
-    private Attribute(){}
-    
-    public Attribute(string name,
-        bool canUseInFilter,
-        int order,
-        bool allowMultipleValues,
-        AttributeType type,
-        AttributeControlType controlType,
-        List<object> predefinedValues = null)
+    public Attribute()
     {
-        Name = name;
-        CanUseInFilter = canUseInFilter;
-        Order = order;
-        AllowMultipleValues = allowMultipleValues;
-        Type = type;
-        ControlType = controlType;
-        PredefinedValues = predefinedValues;
     }
 
-    public List<string> StringValues { get; set; }
-    
     /// <summary>
     ///     Название атрибута
     /// </summary>
@@ -67,9 +48,28 @@ public class Attribute : IVisibleEntity
     public AttributeControlType ControlType { get; set; }
 
     /// <summary>
+    ///     Использовать значения атрибута в полнотекстовом поиске
+    /// </summary>
+    public bool IsUseValuesForTextSearch { get; set; }
+
+    /// <summary>
+    ///     Обязательность заполнения атрибута
+    /// </summary>
+    public bool IsRequired { get; set; }
+
+    /// <summary>
+    ///     Уникальный код атрибута. Может пригодится в дальнейшем при построении UI
+    /// </summary>
+    public string Code { get; set; }
+
+    /// <summary>
     ///     Ссылка на категории, к которым принадлежит атрибут
     /// </summary>
     public List<Category> Categories { get; set; }
+
+    public List<CategoryAttribute> CategoryAttributes { get; set; }
+
+    public int Id { get; set; }
 
     public bool IsVisible { get; set; }
 }

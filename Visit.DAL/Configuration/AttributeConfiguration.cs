@@ -13,7 +13,8 @@ public class AttributeConfiguration : IEntityTypeConfiguration<Attribute>
         builder.HasKey(a => a.Id);
 
         builder.Property(a => a.Name).IsRequired().HasMaxLength(255);
-        
+        builder.Property(a => a.Code).IsRequired().HasMaxLength(255);
+
         builder.Property(a => a.PredefinedValues).HasColumnType("jsonb");
 
         builder.Property(a => a.Type)
@@ -27,8 +28,7 @@ public class AttributeConfiguration : IEntityTypeConfiguration<Attribute>
             .IsRequired();
 
         builder.HasMany(a => a.Categories)
-            .WithMany(c => c.Attributes);
-
-        builder.PrimitiveCollection(a => a.StringValues);
+            .WithMany(c => c.Attributes)
+            .UsingEntity<CategoryAttribute>();
     }
 }

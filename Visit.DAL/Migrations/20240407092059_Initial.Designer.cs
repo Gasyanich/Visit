@@ -13,7 +13,7 @@ using Visit.DAL;
 namespace Visit.DAL.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240325172608_Initial")]
+    [Migration("20240407092059_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -26,25 +26,10 @@ namespace Visit.DAL.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("AttributeCategory", b =>
-                {
-                    b.Property<long>("AttributesId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("CategoriesId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("AttributesId", "CategoriesId");
-
-                    b.HasIndex("CategoriesId");
-
-                    b.ToTable("AttributeCategory");
-                });
-
             modelBuilder.Entity("CategoryPlace", b =>
                 {
-                    b.Property<long>("CategoriesId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("CategoriesId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("PlacesId")
                         .HasColumnType("integer");
@@ -58,11 +43,11 @@ namespace Visit.DAL.Migrations
 
             modelBuilder.Entity("Visit.Domain.Attribute", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("AllowMultipleValues")
                         .HasColumnType("boolean");
@@ -70,10 +55,21 @@ namespace Visit.DAL.Migrations
                     b.Property<bool>("CanUseInFilter")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
                     b.Property<string>("ControlType")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
+
+                    b.Property<bool>("IsRequired")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsUseValuesForTextSearch")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsVisible")
                         .HasColumnType("boolean");
@@ -88,9 +84,6 @@ namespace Visit.DAL.Migrations
 
                     b.Property<List<object>>("PredefinedValues")
                         .HasColumnType("jsonb");
-
-                    b.Property<List<string>>("StringValues")
-                        .HasColumnType("text[]");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -110,8 +103,8 @@ namespace Visit.DAL.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<long>("AttributeId")
-                        .HasColumnType("bigint");
+                    b.Property<int>("AttributeId")
+                        .HasColumnType("integer");
 
                     b.Property<double?>("DoubleValue")
                         .HasColumnType("double precision");
@@ -128,26 +121,30 @@ namespace Visit.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AttributeId");
-
-                    b.HasIndex("DoubleValue");
-
-                    b.HasIndex("IntValue");
-
                     b.HasIndex("PlaceId");
 
-                    b.HasIndex("StringValue");
+                    b.HasIndex("AttributeId", "DoubleValue");
+
+                    NpgsqlIndexBuilderExtensions.IncludeProperties(b.HasIndex("AttributeId", "DoubleValue"), new[] { "PlaceId" });
+
+                    b.HasIndex("AttributeId", "IntValue");
+
+                    NpgsqlIndexBuilderExtensions.IncludeProperties(b.HasIndex("AttributeId", "IntValue"), new[] { "PlaceId" });
+
+                    b.HasIndex("AttributeId", "StringValue");
+
+                    NpgsqlIndexBuilderExtensions.IncludeProperties(b.HasIndex("AttributeId", "StringValue"), new[] { "PlaceId" });
 
                     b.ToTable("AttributeValues");
                 });
 
             modelBuilder.Entity("Visit.Domain.Category", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("IsVisible")
                         .HasColumnType("boolean");
@@ -160,6 +157,21 @@ namespace Visit.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Visit.Domain.CategoryAttribute", b =>
+                {
+                    b.Property<int>("AttributeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("AttributeId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("CategoryAttributes");
                 });
 
             modelBuilder.Entity("Visit.Domain.Place", b =>
@@ -186,21 +198,6 @@ namespace Visit.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Places");
-                });
-
-            modelBuilder.Entity("AttributeCategory", b =>
-                {
-                    b.HasOne("Visit.Domain.Attribute", null)
-                        .WithMany()
-                        .HasForeignKey("AttributesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Visit.Domain.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("CategoryPlace", b =>
@@ -235,6 +232,35 @@ namespace Visit.DAL.Migrations
                     b.Navigation("Attribute");
 
                     b.Navigation("Place");
+                });
+
+            modelBuilder.Entity("Visit.Domain.CategoryAttribute", b =>
+                {
+                    b.HasOne("Visit.Domain.Attribute", "Attribute")
+                        .WithMany("CategoryAttributes")
+                        .HasForeignKey("AttributeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Visit.Domain.Category", "Category")
+                        .WithMany("CategoryAttributes")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Attribute");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Visit.Domain.Attribute", b =>
+                {
+                    b.Navigation("CategoryAttributes");
+                });
+
+            modelBuilder.Entity("Visit.Domain.Category", b =>
+                {
+                    b.Navigation("CategoryAttributes");
                 });
 
             modelBuilder.Entity("Visit.Domain.Place", b =>

@@ -1,11 +1,8 @@
-﻿namespace Visit.Contracts.Attribute.Create;
+﻿namespace Visit.Domain.BL.DTO.Attribute;
 
-public class CreateAttributeResponse
+public class UpdateAttributeDto
 {
-    /// <summary>
-    ///     Id атрибута
-    /// </summary>
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     /// <summary>
     ///     Название атрибута
@@ -32,7 +29,7 @@ public class CreateAttributeResponse
     ///     <example>Вид кухни: итальянская, греческая, грузинская..</example>
     ///     <example>Способ оплаты: картой, наличными, переводом</example>
     /// </summary>
-    public List<object> PredefinedValues { get; set; }
+    public IEnumerable<object> PredefinedValues { get; set; }
 
     /// <summary>
     ///     Тип значения атрибута
@@ -43,4 +40,19 @@ public class CreateAttributeResponse
     ///     Тип контрола атрибута
     /// </summary>
     public AttributeControlType ControlType { get; set; }
+
+    /// <summary>
+    ///     Использовать значения атрибута в полнотекстовом поиске
+    /// </summary>
+    public bool IsUseValuesForTextSearch { get; set; }
+
+    /// <summary>
+    ///     Обязательность заполнения атрибута
+    /// </summary>
+    public bool IsRequired { get; set; }
+
+    /// <summary>
+    ///     Уникальный код атрибута. Может пригодится в дальнейшем при построении UI
+    /// </summary>
+    public string Code { get; set; }
 }

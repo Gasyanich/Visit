@@ -1,51 +1,46 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Visit.DAL;
+﻿using AutoMapper;
 using Visit.Domain.BL.Abstractions;
+using Visit.Domain.BL.Abstractions.Repository;
 using Visit.Domain.BL.DTO.Attribute;
 
 namespace Visit.Domain.BL;
 
-public class AttributeService(DataContext dataContext) : IAttributeService
+public class AttributeService(IAttributeRepository attributeRepository, IMapper mapper) : IAttributeService
 {
     public async Task<Attribute> CreateAttribute(CreateAttributeDto dto)
     {
-        var checkNameUnique = await dataContext.Attributes.AnyAsync(c => c.Name == dto.Name);
-        if (checkNameUnique)
+        var isNameExists = await attributeRepository.IsExistByName(dto.Name);
+        if (isNameExists)
             throw new Exception("Атрибут с таким названием уже существует");
 
-        var attribute = new Attribute(
-            dto.Name,
-            dto.CanUseInFilter,
-            dto.Order,
-            dto.AllowMultipleValues,
-            (AttributeType) dto.Type,
-            (AttributeControlType) dto.ControlType,
-            dto.PredefinedValues?.ToList()
-        );
+        var attribute = mapper.Map<Attribute>(dto);
 
-        dataContext.Attributes.Add(attribute);
-        await dataContext.SaveChangesAsync();
+        await attributeRepository.Create(attribute);
 
-        return attribute;
+        return await GetAttributeById(attribute.Id);
+    }
+    
+    public async Task<Attribute> UpdateAttribute(UpdateAttributeDto dto)
+    {
+        var attribute = mapper.Map<Attribute>(dto);
+
+        await attributeRepository.Update(attribute);
+
+        return await GetAttributeById(attribute.Id);
     }
 
     public async Task<IEnumerable<Attribute>> GetAllAttributes()
     {
-        return await dataContext.Attributes
-            .AsNoTracking()
-            .ToListAsync();
+        return await attributeRepository.GetAll();
     } 
     
-    public async Task<Attribute?> GetAttributeById(long id)
+    public async Task<Attribute> GetAttributeById(int id)
     {
-        return await dataContext.Attributes
-            .Include(a => a.Categories)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(a => a.Id == id);
+        return await attributeRepository.GetById(id);
     }
 
-    public async Task DeleteAttributeById(long id)
+    public async Task DeleteAttributeById(int id)
     {
-        await dataContext.Attributes.Where(a => a.Id == id).ExecuteDeleteAsync();
+        await attributeRepository.Delete(id);
     }
 }

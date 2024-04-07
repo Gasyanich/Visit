@@ -21,6 +21,8 @@ public class DataContext : DbContext
 
     public DbSet<Attribute> Attributes { get; set; }
 
+    public DbSet<CategoryAttribute> CategoryAttributes { get; set; }
+
     public DbSet<Place> Places { get; set; }
 
     public DbSet<AttributeValue> AttributeValues { get; set; }

@@ -1,7 +1,12 @@
-﻿namespace Visit.Domain.BL.DTO.Category;
+﻿namespace Visit.Contracts.Category;
 
-public class CreateCategoryDto
+public class UpdateCategoryRequest
 {
+    /// <summary>
+    ///     Id обновляемое категории
+    /// </summary>
+    public int Id { get; set; }
+
     /// <summary>
     ///     Наименование категории
     /// </summary>

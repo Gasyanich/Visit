@@ -15,12 +15,11 @@ public class AttributeValueConfiguration : IEntityTypeConfiguration<AttributeVal
         builder.HasOne(av => av.Place).WithMany(p => p.AttributeValues);
 
         builder.Property(av => av.StringValue).HasMaxLength(255);
-        
+
         builder.HasIndex(av => av.PlaceId);
-        builder.HasIndex(av => av.AttributeId);
         
-        builder.HasIndex(av => av.IntValue);
-        builder.HasIndex(av => av.StringValue);
-        builder.HasIndex(av => av.DoubleValue);
+        builder.HasIndex(av => new {av.AttributeId, av.StringValue}).IncludeProperties(av => av.PlaceId);
+        builder.HasIndex(av => new {av.AttributeId, av.IntValue}).IncludeProperties(av => av.PlaceId);
+        builder.HasIndex(av => new {av.AttributeId, av.DoubleValue}).IncludeProperties(av => av.PlaceId);
     }
 }

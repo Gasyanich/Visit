@@ -8,6 +8,7 @@ public interface IAttributeService
 
     Task<IEnumerable<Attribute>> GetAllAttributes();
     
-    Task<Attribute?> GetAttributeById(long id);
-    Task DeleteAttributeById(long id);
+    Task<Attribute?> GetAttributeById(int id);
+    Task DeleteAttributeById(int id);
+    Task<Attribute> UpdateAttribute(UpdateAttributeDto dto);
 }

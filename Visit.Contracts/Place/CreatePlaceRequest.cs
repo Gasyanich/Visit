@@ -17,30 +17,11 @@ public class CreatePlaceRequest
     /// <summary>
     ///     Id категорий заведения
     /// </summary>
-    public IEnumerable<long> CategoryIds { get; set; }
+    public IEnumerable<int> CategoryIds { get; set; }
 
     /// <summary>
     ///     Список значений атрибутов
     /// </summary>
-    public IEnumerable<CreatePlaceAttributeValueModel> Values { get; set; }
+    public IEnumerable<AttributeValueRequest> Values { get; set; }
 }
 
-public class CreatePlaceAttributeValueModel
-{
-    /// <summary>
-    ///     Id атрибута
-    /// </summary>
-    public long AttributeId { get; set; }
-
-    /// <summary>
-    ///     Значение атрибута. Заполняется если атрибут может иметь только 1 значение
-    ///     <remarks>Тип данных должен совпадать с типом атрибута</remarks>
-    /// </summary>
-    public JsonElement? Value { get; set; }
-
-    /// <summary>
-    ///     Значения атрибута. Заполняется если атрубит может иметь несколько значений
-    ///     <remarks>Тип данных должен совпадать с типом атрибута</remarks>
-    /// </summary>
-    public IEnumerable<JsonElement> Values { get; set; }
-}

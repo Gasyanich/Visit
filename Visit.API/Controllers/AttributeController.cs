@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Visit.Contracts;
-using Visit.Contracts.Attribute.Create;
-using Visit.Contracts.Attribute.GetAll;
-using Visit.Contracts.Attribute.GetById;
+using Visit.Contracts.Attribute;
 using Visit.Domain.BL.Abstractions;
 using Visit.Domain.BL.DTO.Attribute;
 
@@ -25,7 +23,20 @@ public class AttributeController(IAttributeService attributeService, IMapper map
 
         var attribute = await attributeService.CreateAttribute(dto);
 
-        return ApiResponse.CreateSuccess(mapper.Map<CreateAttributeResponse>(attribute));
+        return ApiResponse.CreateSuccess(mapper.Map<AttributeResponse>(attribute));
+    }
+    
+    /// <summary>
+    ///     Обновить атрибут
+    /// </summary>
+    [HttpPut]
+    public async Task<ApiResponse> Update([FromBody] UpdateAttributeRequest request)
+    {
+        var dto = mapper.Map<UpdateAttributeDto>(request);
+
+        var attribute = await attributeService.UpdateAttribute(dto);
+
+        return ApiResponse.CreateSuccess(mapper.Map<AttributeResponse>(attribute));
     }
 
     /// <summary>
@@ -36,7 +47,7 @@ public class AttributeController(IAttributeService attributeService, IMapper map
     {
         var attributes = await attributeService.GetAllAttributes();
 
-        var response = mapper.Map<IEnumerable<GetAllAttributesResponse>>(attributes);
+        var response = mapper.Map<IEnumerable<AttributeResponse>>(attributes);
 
         return ApiResponse.CreateSuccess(response);
     }
@@ -45,14 +56,14 @@ public class AttributeController(IAttributeService attributeService, IMapper map
     ///     Получить подробную информацию об атрибуте
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<ApiResponse<GetAttributeByIdResponse>> GetById(long id)
+    public async Task<ApiResponse<AttributeFullResponse>> GetById(int id)
     {
         var attribute = await attributeService.GetAttributeById(id);
 
         if (attribute is null)
-            return ApiResponse.CreateFailure<GetAttributeByIdResponse>(400, "Атрибут не найден");
+            return ApiResponse.CreateFailure<AttributeFullResponse>(400, "Атрибут не найден");
 
-        var response = mapper.Map<GetAttributeByIdResponse>(attribute);
+        var response = mapper.Map<AttributeFullResponse>(attribute);
 
         return ApiResponse.CreateSuccess(response);
     }
@@ -61,7 +72,7 @@ public class AttributeController(IAttributeService attributeService, IMapper map
     ///     Удалить атрибут
     /// </summary>
     [HttpDelete("{id}")]
-    public async Task<ApiResponse> Delete(long id)
+    public async Task<ApiResponse> Delete(int id)
     {
         await attributeService.DeleteAttributeById(id);
 

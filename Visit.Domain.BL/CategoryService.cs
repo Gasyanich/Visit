@@ -1,43 +1,47 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Visit.DAL;
+﻿using AutoMapper;
 using Visit.Domain.BL.Abstractions;
+using Visit.Domain.BL.Abstractions.Repository;
 using Visit.Domain.BL.DTO.Category;
 
 namespace Visit.Domain.BL;
 
-public class CategoryService(DataContext dataContext) : ICategoryService
+public class CategoryService(ICategoryRepository categoryRepository, IMapper mapper) : ICategoryService
 {
     public async Task<Category> CreateCategory(CreateCategoryDto dto)
     {
-        var checkNameUnique = await dataContext.Categories.AnyAsync(c => c.Name == dto.Name);
+        var checkNameUnique = await categoryRepository.IsExistByName(dto.Name);
         if (checkNameUnique)
             throw new Exception("Категория с таким названием уже существует");
 
-        var category = new Category(dto.Name);
+        var category = mapper.Map<Category>(dto);
 
-        dataContext.Categories.Add(category);
-        await dataContext.SaveChangesAsync();
+        await categoryRepository.Create(category);
 
-        return category;
+        return await GetCategoryById(category.Id);
     }
+
+    public async Task<Category> UpdateCategory(UpdateCategoryDto dto)
+    {
+        var category = mapper.Map<Category>(dto);
+
+        await categoryRepository.Update(category);
+
+        return await GetCategoryById(category.Id);
+    }
+
 
     public async Task<IEnumerable<Category>> GetAllCategories()
     {
-        return await dataContext.Categories
-            .AsNoTracking()
-            .ToListAsync();
+        return await categoryRepository.GetAll();
     }
 
-    public async Task<Category?> GetCategoryById(long id)
+    public async Task<Category> GetCategoryById(int id)
     {
-        return await dataContext.Categories
-            .Include(c => c.Attributes)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Id == id);
+        return await categoryRepository.GetById(id);
     }
 
-    public async Task DeleteCategoryById(long id)
+    public async Task DeleteCategoryById(int id)
     {
-        await dataContext.Categories.Where(c => c.Id == id).ExecuteDeleteAsync();
+        await categoryRepository.Delete(id);
     }
 }

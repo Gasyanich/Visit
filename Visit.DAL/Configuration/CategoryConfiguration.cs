@@ -16,6 +16,7 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
             .WithMany(p => p.Categories);
 
         builder.HasMany(a => a.Attributes)
-            .WithMany(a => a.Categories);
+            .WithMany(a => a.Categories)
+            .UsingEntity<CategoryAttribute>();
     }
 }

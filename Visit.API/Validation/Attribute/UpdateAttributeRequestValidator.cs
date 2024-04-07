@@ -4,10 +4,11 @@ using Visit.Contracts.Attribute;
 
 namespace Visit.API.Validation.Attribute;
 
-public class CreateAttributeRequestValidator : AbstractValidator<CreateAttributeRequest>
+public class UpdateAttributeRequestValidator : AbstractValidator<UpdateAttributeRequest>
 {
-    public CreateAttributeRequestValidator()
+    public UpdateAttributeRequestValidator()
     {
+        RuleFor(r => r.Id).GreaterThan(0);
         RuleFor(r => r.Name).NotEmpty().MaximumLength(255);
         RuleFor(r => r.Code).NotEmpty().MaximumLength(255);
 

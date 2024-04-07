@@ -4,5 +4,5 @@ namespace Visit.Domain.BL.Abstractions;
 
 public interface IAttributeValueFactory
 {
-    Task<IEnumerable<AttributeValue>> CreateAttributeValues(IEnumerable<CreatePlaceAttributeValueDto> dtos);
+    Task<IEnumerable<AttributeValue>> CreateAttributeValues(IEnumerable<int> categoryIds, IEnumerable<AttributeValueDto> dtos);
 }

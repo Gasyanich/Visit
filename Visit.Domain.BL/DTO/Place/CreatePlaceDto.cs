@@ -6,16 +6,16 @@ public class CreatePlaceDto
 
     public string Description { get; set; }
 
-    public IEnumerable<long> CategoryIds { get; set; }
+    public IEnumerable<int> CategoryIds { get; set; }
 
-    public List<CreatePlaceAttributeValueDto> Values { get; set; }
+    public List<AttributeValueDto> Values { get; set; }
 }
 
-public class CreatePlaceAttributeValueDto
+public class AttributeValueDto
 {
-    public long AttributeId { get; set; }
+    public int AttributeId { get; set; }
 
-    public object Value { get; set; }
+    public object? Value { get; set; }
 
     public IEnumerable<object> Values { get; set; }
 }

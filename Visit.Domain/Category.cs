@@ -10,14 +10,22 @@ public class Category : IVisibleEntity
     {
     }
 
-    public Category(string name)
+    
+    public Category(int id, string name, List<Attribute> attributes = null)
+    {
+        Id = id;
+        Name = name;
+        Attributes = attributes?.ToList();
+    }
+    
+    public Category(string name, List<Attribute> attributes = null)
     {
         Name = name;
         Places = new List<Place>();
-        Attributes = new List<Attribute>();
+        Attributes = attributes?.ToList();
     }
 
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     /// <summary>
     ///     Название категории
@@ -33,6 +41,7 @@ public class Category : IVisibleEntity
     ///     Ссылка на атрибуты категории
     /// </summary>
     public List<Attribute> Attributes { get; set; }
+    public List<CategoryAttribute> CategoryAttributes { get; set; }
 
     public bool IsVisible { get; set; }
 }

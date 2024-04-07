@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Visit.Contracts;
-using Visit.Contracts.Category.Create;
-using Visit.Contracts.Category.GetAll;
-using Visit.Contracts.Category.GetById;
+using Visit.Contracts.Category;
 using Visit.Domain.BL.Abstractions;
 using Visit.Domain.BL.DTO.Category;
 
@@ -21,38 +19,51 @@ public class CategoryController(
     ///     Создать категорию
     /// </summary>
     [HttpPost]
-    public async Task<ApiResponse<CreateCategoryResponse>> Create(CreateCategoryRequest request)
+    public async Task<ApiResponse<CategoryFullResponse>> Create(CreateCategoryRequest request)
     {
         var dto = mapper.Map<CreateCategoryDto>(request);
 
         var category = await categoryService.CreateCategory(dto);
 
-        return ApiResponse.CreateSuccess(mapper.Map<CreateCategoryResponse>(category));
+        return ApiResponse.CreateSuccess(mapper.Map<CategoryFullResponse>(category));
+    }
+    
+    /// <summary>
+    ///     Обновить категорию
+    /// </summary>
+    [HttpPut]
+    public async Task<ApiResponse<CategoryFullResponse>> Update(UpdateCategoryRequest request)
+    {
+        var dto = mapper.Map<UpdateCategoryDto>(request);
+
+        var category = await categoryService.UpdateCategory(dto);
+
+        return ApiResponse.CreateSuccess(mapper.Map<CategoryFullResponse>(category));
     }
 
     /// <summary>
     ///     Получить список всех категорий
     /// </summary>
     [HttpGet]
-    public async Task<ApiResponse<IEnumerable<GetAllCategoriesResponse>>> GetAll()
+    public async Task<ApiResponse<IEnumerable<CategoryResponse>>> GetAll()
     {
         var categories = await categoryService.GetAllCategories();
 
-        return ApiResponse.CreateSuccess(mapper.Map<IEnumerable<GetAllCategoriesResponse>>(categories));
+        return ApiResponse.CreateSuccess(mapper.Map<IEnumerable<CategoryResponse>>(categories));
     }
 
     /// <summary>
     ///     Получить подробную информацию о категории
     /// </summary>
     [HttpGet("{id}")]
-    public async Task<ApiResponse<GetCategoryByIdResponse>> GetById(long id)
+    public async Task<ApiResponse<CategoryFullResponse>> GetById(int id)
     {
         var category = await categoryService.GetCategoryById(id);
 
         if (category is null)
-            return ApiResponse.CreateFailure<GetCategoryByIdResponse>(400, "Категория не найдена");
+            return ApiResponse.CreateFailure<CategoryFullResponse>(400, "Категория не найдена");
 
-        var response = mapper.Map<GetCategoryByIdResponse>(category);
+        var response = mapper.Map<CategoryFullResponse>(category);
 
         return ApiResponse.CreateSuccess(response);
     }
@@ -61,7 +72,7 @@ public class CategoryController(
     ///     Удалить категорию
     /// </summary>
     [HttpDelete("{id}")]
-    public async Task<ApiResponse> Delete(long id)
+    public async Task<ApiResponse> Delete(int id)
     {
         await categoryService.DeleteCategoryById(id);
 

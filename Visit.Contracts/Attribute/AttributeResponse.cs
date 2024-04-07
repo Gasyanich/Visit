@@ -1,31 +1,11 @@
-﻿using Visit.Contracts.Attribute;
+﻿namespace Visit.Contracts.Attribute;
 
-namespace Visit.Contracts.Category.GetById;
-
-public class GetCategoryByIdResponse
-{
-    /// <summary>
-    ///     Id категории
-    /// </summary>
-    public long Id { get; set; }
-
-    /// <summary>
-    ///     Название категории
-    /// </summary>
-    public string Name { get; set; }
-
-    /// <summary>
-    ///     Список атрибутов категории
-    /// </summary>
-    public IEnumerable<GetCategoryAttributeModel> Attributes { get; set; }
-}
-
-public class GetCategoryAttributeModel
+public class AttributeResponse
 {
     /// <summary>
     ///     Id атрибута
     /// </summary>
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     /// <summary>
     ///     Название атрибута

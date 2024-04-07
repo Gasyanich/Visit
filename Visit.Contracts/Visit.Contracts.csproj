@@ -3,9 +3,12 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>disable</Nullable>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
     </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Visit.Domain\Visit.Domain.csproj" />
+    </ItemGroup>
 
 </Project>

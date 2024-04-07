@@ -4,6 +4,7 @@ using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Visit.API.Mapping;
 using Visit.DAL;
 using Visit.Domain.BL;
+using Visit.Domain.BL.Mapping;
 
 namespace Visit.API
 {
@@ -27,7 +28,11 @@ namespace Visit.API
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Visit.Contracts.xml"));
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Visit.API.xml"));
             });
-            services.AddAutoMapper(cfg => { cfg.AddProfile(new ApiMappingProfile()); });
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile(new ApiMappingProfile());
+                cfg.AddProfile(new DomainMappingProfile());
+            });
             services.AddValidatorsFromAssembly(typeof(Program).Assembly).AddFluentValidationAutoValidation(opt =>
             {
                 opt.DisableBuiltInModelValidation = true;

@@ -16,9 +16,8 @@ namespace Visit.DAL.Migrations
                 name: "Attributes",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    StringValues = table.Column<List<string>>(type: "text[]", nullable: true),
                     Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     CanUseInFilter = table.Column<bool>(type: "boolean", nullable: false),
                     Order = table.Column<int>(type: "integer", nullable: false),
@@ -26,6 +25,9 @@ namespace Visit.DAL.Migrations
                     PredefinedValues = table.Column<List<object>>(type: "jsonb", nullable: true),
                     Type = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     ControlType = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    IsUseValuesForTextSearch = table.Column<bool>(type: "boolean", nullable: false),
+                    IsRequired = table.Column<bool>(type: "boolean", nullable: false),
+                    Code = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     IsVisible = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -37,7 +39,7 @@ namespace Visit.DAL.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     IsVisible = table.Column<bool>(type: "boolean", nullable: false)
@@ -63,24 +65,24 @@ namespace Visit.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AttributeCategory",
+                name: "CategoryAttributes",
                 columns: table => new
                 {
-                    AttributesId = table.Column<long>(type: "bigint", nullable: false),
-                    CategoriesId = table.Column<long>(type: "bigint", nullable: false)
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
+                    AttributeId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AttributeCategory", x => new { x.AttributesId, x.CategoriesId });
+                    table.PrimaryKey("PK_CategoryAttributes", x => new { x.AttributeId, x.CategoryId });
                     table.ForeignKey(
-                        name: "FK_AttributeCategory_Attributes_AttributesId",
-                        column: x => x.AttributesId,
+                        name: "FK_CategoryAttributes_Attributes_AttributeId",
+                        column: x => x.AttributeId,
                         principalTable: "Attributes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AttributeCategory_Categories_CategoriesId",
-                        column: x => x.CategoriesId,
+                        name: "FK_CategoryAttributes_Categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -93,7 +95,7 @@ namespace Visit.DAL.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     PlaceId = table.Column<int>(type: "integer", nullable: false),
-                    AttributeId = table.Column<long>(type: "bigint", nullable: false),
+                    AttributeId = table.Column<int>(type: "integer", nullable: false),
                     IntValue = table.Column<int>(type: "integer", nullable: true),
                     DoubleValue = table.Column<double>(type: "double precision", nullable: true),
                     StringValue = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true)
@@ -119,7 +121,7 @@ namespace Visit.DAL.Migrations
                 name: "CategoryPlace",
                 columns: table => new
                 {
-                    CategoriesId = table.Column<long>(type: "bigint", nullable: false),
+                    CategoriesId = table.Column<int>(type: "integer", nullable: false),
                     PlacesId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -140,24 +142,22 @@ namespace Visit.DAL.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AttributeCategory_CategoriesId",
-                table: "AttributeCategory",
-                column: "CategoriesId");
+                name: "IX_AttributeValues_AttributeId_DoubleValue",
+                table: "AttributeValues",
+                columns: new[] { "AttributeId", "DoubleValue" })
+                .Annotation("Npgsql:IndexInclude", new[] { "PlaceId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AttributeValues_AttributeId",
+                name: "IX_AttributeValues_AttributeId_IntValue",
                 table: "AttributeValues",
-                column: "AttributeId");
+                columns: new[] { "AttributeId", "IntValue" })
+                .Annotation("Npgsql:IndexInclude", new[] { "PlaceId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AttributeValues_DoubleValue",
+                name: "IX_AttributeValues_AttributeId_StringValue",
                 table: "AttributeValues",
-                column: "DoubleValue");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AttributeValues_IntValue",
-                table: "AttributeValues",
-                column: "IntValue");
+                columns: new[] { "AttributeId", "StringValue" })
+                .Annotation("Npgsql:IndexInclude", new[] { "PlaceId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AttributeValues_PlaceId",
@@ -165,9 +165,9 @@ namespace Visit.DAL.Migrations
                 column: "PlaceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AttributeValues_StringValue",
-                table: "AttributeValues",
-                column: "StringValue");
+                name: "IX_CategoryAttributes_CategoryId",
+                table: "CategoryAttributes",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CategoryPlace_PlacesId",
@@ -179,10 +179,10 @@ namespace Visit.DAL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AttributeCategory");
+                name: "AttributeValues");
 
             migrationBuilder.DropTable(
-                name: "AttributeValues");
+                name: "CategoryAttributes");
 
             migrationBuilder.DropTable(
                 name: "CategoryPlace");

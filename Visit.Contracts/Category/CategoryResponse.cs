@@ -1,11 +1,11 @@
-﻿namespace Visit.Contracts.Category.Create;
+﻿namespace Visit.Contracts.Category;
 
-public class CreateCategoryResponse
+public class CategoryResponse
 {
     /// <summary>
     ///     Id категории
     /// </summary>
-    public long Id { get; set; }
+    public int Id { get; set; }
 
     /// <summary>
     ///     Наименование категории
