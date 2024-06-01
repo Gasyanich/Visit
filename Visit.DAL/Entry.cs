@@ -16,6 +16,7 @@ public static class Entry
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IAttributeRepository, AttributeRepository>();
         services.AddScoped<IPlaceRepository, PlaceRepository>();
+        services.AddScoped(typeof(IMemoryCacheRepository<>), typeof(MemoryCacheRepository<>));
         services.AddMemoryCache();
 
         services.AddDbContext<DataContext>(builder =>

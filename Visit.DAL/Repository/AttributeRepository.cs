@@ -4,12 +4,11 @@ using Attribute = Visit.Domain.Attribute;
 
 namespace Visit.DAL.Repository;
 
-public class AttributeRepository(DataContext dataContext) : IAttributeRepository
+public class AttributeRepository(DataContext dataContext, IMemoryCacheRepository<Attribute> memoryCache) : IAttributeRepository
 {
-    public async Task<bool> IsExistByName(string name)
-    {
-        return await dataContext.Attributes.AnyAsync(c => c.Name == name);
-    }
+
+    public async Task<bool> IsExistByName(string name) => 
+        memoryCache.GetByKey(name) != null || await dataContext.Attributes.AnyAsync(c => c.Name == name);
 
     public async Task<Attribute> Create(Attribute attribute)
     {
